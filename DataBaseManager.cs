@@ -1,18 +1,19 @@
 ﻿using Microsoft.Data.SqlClient;
+using System;
 
 namespace Desafio_02
 {
     public class DataBaseManager
     {
         private readonly string connectionString = "Data Source=WSFAR37KT7G;Initial Catalog=Funcionarios;User ID=sa;Password=Spike369852;TrustServerCertificate=True";
+        private readonly string tableName = "Funcionario";
 
-        public void CriarTabela()
+        public void CreateTable()
         {
             using SqlConnection connection = new(connectionString);
             connection.Open();
-            string nomeTabela = "Funcionario";
             string createTableQuery = $@"
-                CREATE TABLE {nomeTabela} (
+                CREATE TABLE {tableName} (
                     Id INT NOT NULL PRIMARY KEY,
                     Nome VARCHAR(50) NOT NULL,
                     Idade INT NOT NULL,
@@ -24,7 +25,18 @@ namespace Desafio_02
             Console.WriteLine("\nTabela criada com sucesso!");
         }
 
-        public void InserirDados(int numRows)
+        public bool CheckIdExists(int id)
+        {
+            string query = "SELECT COUNT(*) FROM Funcionario WHERE Id = @Id";
+            using SqlConnection connection = new (connectionString);
+            using SqlCommand command = new (query, connection);
+            command.Parameters.AddWithValue("@Id", id);
+            connection.Open();
+            int count = (int)command.ExecuteScalar();
+            return count > 0;
+        }
+
+        public void InsertData(int numRows)
         {
             Random random = new();
 
@@ -58,12 +70,17 @@ namespace Desafio_02
             connection.Open();
             for (int i = 0; i < numRows; i++)
             {
-                int id = i + 1;
+                int id;
                 string name = namePersons[random.Next(namePersons.Length)];
                 int age = random.Next(18, 51);
                 string city = cities[random.Next(cities.Length)];
 
-                string insertQuery = "INSERT INTO Funcionario ([Id], [Nome], [Idade], [Endereco]) VALUES (@ Id, @Nome, @Idade, @Endereco)";
+                do
+                {
+                    id = random.Next(1, 10001);
+                } while (CheckIdExists(id));
+
+                string insertQuery = "INSERT INTO Funcionario (Id, Nome, Idade, Endereco) VALUES (@Id, @Nome, @Idade, @Endereco)";
 
                 using SqlCommand command = new(insertQuery, connection);
                 command.Parameters.AddWithValue("@Id", id);
@@ -76,7 +93,7 @@ namespace Desafio_02
             Console.WriteLine("\nDados inseridos com sucesso!");
         }
 
-        public void ConsultarDados()
+        public void ConsultData()
         {
             using SqlConnection connection = new(connectionString);
             connection.Open();
@@ -86,6 +103,24 @@ namespace Desafio_02
             while (reader.Read())
             {
                 Console.WriteLine($"ID: {reader["Id"]}, Nome: {reader["Nome"]}, Idade: {reader["Idade"]}, Endereco: {reader["Endereco"]}");
+            }
+        }
+
+        public void DeleteTable()
+        {
+            using SqlConnection connection = new(connectionString);
+            try
+            {
+                connection.Open();
+
+                string dropTableQuery = $"DROP TABLE {tableName}";
+                using SqlCommand command = new(dropTableQuery, connection);
+                command.ExecuteNonQuery();
+                Console.WriteLine($"Tabela '{tableName}' excluída com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao excluir a tabela '{tableName}': {ex.Message}");
             }
         }
     }

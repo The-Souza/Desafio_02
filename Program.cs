@@ -7,8 +7,9 @@ public class Program
         DataBaseManager dbManager = new();
         int numRows = 100;
 
-        //dbManager.CriarTabela();
-        dbManager.InserirDados(numRows);
-        dbManager.ConsultarDados();
+        //dbManager.CreateTable();
+        dbManager.InsertData(numRows);
+        dbManager.ConsultData();
+        //dbManager.DeleteTable();
     }
 }
