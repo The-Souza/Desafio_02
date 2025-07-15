@@ -1,0 +1,6 @@
+{
+  "ConnectionStrings": {
+    "ConnectionString": "Server=Change_Me;Database=Change_Me;User Id=Change_Me;Password=Change_Me;TrustServerCertificate=True;"
+  }
+}
+
