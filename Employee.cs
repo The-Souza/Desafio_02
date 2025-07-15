@@ -12,7 +12,7 @@ namespace Desafio_02
         public int? Id { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [StringLength(50)]
         [Column("Nome")]
         public string? Name { get; set; }
 
@@ -22,7 +22,7 @@ namespace Desafio_02
         public int? Age { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [StringLength(100)]
         [Column("Endereco")]
         public string? Address { get; set; }
     }
