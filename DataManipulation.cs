@@ -1,52 +1,112 @@
 ﻿using Microsoft.Data.SqlClient;
-using Dapper;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace Desafio_02
 {
-    public class DataManipulation(MyDbContext context)
+    public class DataManipulation
     {
-        public void CreateTable() 
+        private readonly MyDbContext context;
+
+        public DataManipulation(MyDbContext context)
         {
-            try 
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public void CreateTable()
+        {
+            var tableName = GetEmployeeTableName();
+
+            try
             {
+                if (TableExists(tableName))
+                {
+                    Console.WriteLine($"\nA tabela '{tableName}' já existe.");
+                    return;
+                }
+
                 context.Database.EnsureCreated();
                 Console.WriteLine("\nTabela criada com sucesso!");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Console.WriteLine($"\nErro ao criar tabela: {ex.Message}");
-                return;
             }
-        } 
+        }
+
+        public void DeleteTable()
+        {
+            var tableName = GetEmployeeTableName();
+
+            try
+            {
+                if (!TableExists(tableName))
+                {
+                    Console.WriteLine($"\nA tabela '{tableName}' não existe.");
+                    return;
+                }
+
+                using var command = context.Database.GetDbConnection().CreateCommand();
+                command.CommandText = $"DROP TABLE [dbo].[{tableName}]";
+
+                context.Database.OpenConnection();
+                command.ExecuteNonQuery();
+
+                Console.WriteLine($"\nTabela '{tableName}' deletada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nErro ao deletar a tabela '{tableName}': {ex.Message}");
+            }
+            finally
+            {
+                context.Database.CloseConnection();
+            }
+        }
 
         public void DeleteAllEmployees()
         {
-            try 
-            { 
-                var employees = context.Employees.ToList();
-                if (employees.Count != 0)
+            var tableName = GetEmployeeTableName();
+
+            try
+            {
+                if (!TableExists(tableName))
                 {
+                    Console.WriteLine($"\nA tabela '{tableName}' não existe. Nenhum registro foi deletado.");
+                    return;
+                }
+
+                if (context.Employees.Any())
+                {
+                    var employees = context.Employees.ToList();
                     context.Employees.RemoveRange(employees);
                     context.SaveChanges();
-                    Console.WriteLine("\nDeletando registros...");
+                    Console.WriteLine("\nTodos os registros foram deletados com sucesso.");
                 }
                 else
                 {
                     Console.WriteLine("\nNenhum registro a ser deletado.");
-                    return;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"\nErro ao deletar registros: {ex.Message}");
-                return;
             }
         }
 
         public void InsertEmployees(int count)
         {
+            var tableName = GetEmployeeTableName();
+
             try
             {
+                if (!TableExists(tableName))
+                {
+                    Console.WriteLine($"\nA tabela '{tableName}' não existe. Não foi possível inserir registros.");
+                    return;
+                }
+
                 var random = new Random();
                 var dataGenerator = new DataGenerator();
 
@@ -55,25 +115,33 @@ namespace Desafio_02
                 {
                     var employee = new Employee
                     {
-                        Name = dataGenerator.RandomName(),
+                        Name = dataGenerator.GetRandomName(),
                         Age = random.Next(18, 51),
-                        Address = dataGenerator.RandomCity()
+                        Address = dataGenerator.GetRandomCity()
                     };
                     context.Employees.Add(employee);
                 }
                 context.SaveChanges();
+                Console.WriteLine($"\n{count} registros inseridos com sucesso.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"\nErro ao inserir registros: {ex.Message}");
-                return;
             }
         }
 
-        public void GetAllEmployees() 
+        public void GetAllEmployees()
         {
-            try 
+            var tableName = GetEmployeeTableName();
+
+            try
             {
+                if (!TableExists(tableName))
+                {
+                    Console.WriteLine($"\nA tabela '{tableName}' não existe. Nenhum registro para mostrar.");
+                    return;
+                }
+
                 var employees = context.Employees.ToList();
                 if (employees.Count == 0)
                 {
@@ -92,8 +160,42 @@ namespace Desafio_02
             catch (Exception ex)
             {
                 Console.WriteLine($"\nErro ao consultar registros: {ex.Message}");
-                return;
             }
+        }
+
+        private bool TableExists(string tableName)
+        {
+            try
+            {
+                using var command = context.Database.GetDbConnection().CreateCommand();
+                command.CommandText = @"
+                    SELECT 1 FROM INFORMATION_SCHEMA.TABLES 
+                    WHERE TABLE_NAME = @TableName AND TABLE_SCHEMA = 'dbo'";
+                command.Parameters.Add(new SqlParameter("@TableName", tableName));
+
+                context.Database.OpenConnection();
+                using var reader = command.ExecuteReader();
+
+                return reader.HasRows;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nErro ao verificar existência da tabela: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                context.Database.CloseConnection();
+            }
+        }
+
+        private string GetEmployeeTableName()
+        {
+            var tableAttr = typeof(Employee).GetCustomAttribute<TableAttribute>();
+            if (tableAttr != null)
+                return tableAttr.Name;
+
+            return typeof(Employee).Name;
         }
     }
 }

@@ -30,7 +30,7 @@
 
         private readonly Random Random = new();
 
-        public string RandomName() => Names[Random.Next(Names.Length)];
-        public string RandomCity() => Cities[Random.Next(Cities.Length)];
+        public string GetRandomName() => Names[Random.Next(Names.Length)];
+        public string GetRandomCity() => Cities[Random.Next(Cities.Length)];
     }
 }

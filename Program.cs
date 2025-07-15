@@ -14,7 +14,7 @@ public class Program
 
         while (true)
         {
-            Console.WriteLine("Menu de Opções:\n\n1. Criar tabela\n2. Deletar registros\n3. Inserir registros\n4. Consultar tabela\n5. Sair");
+            Console.WriteLine("Menu de Opções:\n\n1. Criar tabela\n2. Deletar tabela\n3. Inserir registros\n4. Deletar registros\n5. Consultar tabela\n6. Sair");
             Console.Write("\nEscolha uma opção: ");
 
             switch (Console.ReadLine())
@@ -25,7 +25,7 @@ public class Program
                     break;
 
                 case "2":
-                    dataManipulation.DeleteAllEmployees();
+                    dataManipulation.DeleteTable();
                     program.BackToMenu();
                     break;
 
@@ -36,11 +36,16 @@ public class Program
                     break;
 
                 case "4":
-                    dataManipulation.GetAllEmployees();
+                    dataManipulation.DeleteAllEmployees();
                     program.BackToMenu();
                     break;
 
                 case "5":
+                    dataManipulation.GetAllEmployees();
+                    program.BackToMenu();
+                    break;
+
+                case "6":
                     Console.WriteLine("\nSaindo...");
                     return;
 
@@ -67,7 +72,7 @@ public class Program
 
     private string ReadConnectionString()
     {
-        try 
+        try
         {
             var builder = new ConfigurationBuilder()
                         .SetBasePath(Directory.GetCurrentDirectory())
@@ -87,21 +92,21 @@ public class Program
         catch (Exception ex)
         {
             Console.WriteLine($"Erro ao ler a ConnectionString: {ex.Message}");
-            return string.Empty;
+            Environment.Exit(1);
+            return "";
         }
     }
 
     private void BackToMenu()
     {
-        string backToMenu = "\nPressino qualquer tecla para voltar ao Menu de Operações.";
-        Console.Write(backToMenu);
+        Console.Write("\nPressione qualquer tecla para voltar ao Menu de Operações.");
         Console.ReadKey();
         Console.Clear();
     }
 
     private void HandleInvalidOption()
     {
-        Console.Write("\nOpção inválida. Escolha entre as opções [1], [2], [3], [4] e [5].");
+        Console.Write("\nOpção inválida. Escolha entre as opções [1], [2], [3], [4], [5] e [6].");
         Console.ReadKey();
         Console.Clear();
     }

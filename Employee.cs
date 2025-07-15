@@ -13,17 +13,17 @@ namespace Desafio_02
 
         [Required]
         [StringLength(50)]
-        [Column("Nome")]
+        [Column("Name", TypeName = "varchar(50)")]
         public string? Name { get; set; }
 
         [Required]
         [Range(18, 51)]
-        [Column("Idade")]
+        [Column("Age")]
         public int? Age { get; set; }
 
         [Required]
         [StringLength(100)]
-        [Column("Endereco")]
+        [Column("Address", TypeName = "varchar(100)")]
         public string? Address { get; set; }
     }
 }
