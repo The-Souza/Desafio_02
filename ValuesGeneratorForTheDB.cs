@@ -1,6 +1,6 @@
 ﻿namespace Desafio_02
 {
-    public class DataGenerator
+    public class ValuesGeneratorForTheDB
     {
         private readonly string[] Names = {
             "João", "Pedro", "Lucas", "Mateus", "Marcos", "Felipe", "Gabriel", "Rafael", "Bruno", "Gustavo",

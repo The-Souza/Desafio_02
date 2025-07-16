@@ -5,11 +5,11 @@ using System.Reflection;
 
 namespace Desafio_02
 {
-    public class DataManipulation
+    public class DbManipulation
     {
         private readonly MyDbContext context;
 
-        public DataManipulation(MyDbContext context)
+        public DbManipulation(MyDbContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -95,7 +95,7 @@ namespace Desafio_02
             }
         }
 
-        public void InsertEmployees(int count)
+        public void InsertEmployees()
         {
             var tableName = GetEmployeeTableName();
 
@@ -108,21 +108,22 @@ namespace Desafio_02
                 }
 
                 var random = new Random();
-                var dataGenerator = new DataGenerator();
+                var generator = new ValuesGeneratorForTheDB();
+                int countRows = PromptForEmployeeCount();
 
                 Console.WriteLine("\nInserindo registros...");
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < countRows; i++)
                 {
                     var employee = new Employee
                     {
-                        Name = dataGenerator.GetRandomName(),
+                        Name = generator.GetRandomName(),
                         Age = random.Next(18, 51),
-                        Address = dataGenerator.GetRandomCity()
+                        Address = generator.GetRandomCity()
                     };
                     context.Employees.Add(employee);
                 }
                 context.SaveChanges();
-                Console.WriteLine($"\n{count} registros inseridos com sucesso.");
+                Console.WriteLine($"\n{countRows} registros inseridos com sucesso.");
             }
             catch (Exception ex)
             {
@@ -161,6 +162,20 @@ namespace Desafio_02
             {
                 Console.WriteLine($"\nErro ao consultar registros: {ex.Message}");
             }
+        }
+
+        private int PromptForEmployeeCount()
+        {
+            Console.Write("\nQuantidade de registros para inserir: ");
+            int countRows;
+            do
+            {
+                if (!int.TryParse(Console.ReadLine(), out countRows) || countRows == 0)
+                {
+                    Console.Write("\nEntrada inválida.\nInsira um número ou um número maior que zero: ");
+                }
+            } while (countRows <= 0);
+            return countRows;
         }
 
         private bool TableExists(string tableName)

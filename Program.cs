@@ -10,7 +10,7 @@ public class Program
         string? connectionString = program.ReadConnectionString();
 
         var context = new MyDbContext(connectionString);
-        var dataManipulation = new DataManipulation(context);
+        var dataManipulation = new DbManipulation(context);
 
         while (true)
         {
@@ -30,8 +30,7 @@ public class Program
                     break;
 
                 case "3":
-                    int numRows = program.PromptForRowCount();
-                    dataManipulation.InsertEmployees(numRows);
+                    dataManipulation.InsertEmployees();
                     program.BackToMenu();
                     break;
 
@@ -54,20 +53,6 @@ public class Program
                     break;
             }
         }
-    }
-
-    private int PromptForRowCount()
-    {
-        Console.Write("\nQuantidade de registros para inserir: ");
-        int numRows;
-        do
-        {
-            if (!int.TryParse(Console.ReadLine(), out numRows) || numRows == 0) 
-            { 
-                Console.Write("\nEntrada inválida.\nInsira um número ou um número maior que zero: ");
-            }
-        } while (numRows <= 0);
-        return numRows;
     }
 
     private string ReadConnectionString()

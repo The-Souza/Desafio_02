@@ -9,11 +9,11 @@ Aplicação console em C# utilizando **Entity Framework Core** para manipulaçã
 ```
 Desafio_02/
 ├── Program.cs
+├── DbManipulation.cs
 ├── MyDbContext.cs
-├── ExampleAppSettings.json
+├── ValuesGeneratorForTheDB.cs
 ├── Employee.cs
-├── DataManipulation.cs
-├── DataGenerator.cs
+├── ExampleAppSettings.json
 ```
 
 ---
@@ -24,7 +24,7 @@ Desafio_02/
 Ponto de entrada da aplicação. Responsável por:
 
 - Ler a `ConnectionString` do `appsettings.json`.
-- Instanciar `MyDbContext` e `DataManipulation`.
+- Instanciar `MyDbContext` e `DbManipulation`.
 - Exibir o menu interativo com as opções:
   1. Criar tabela  
   2. Deletar tabela  
@@ -32,6 +32,19 @@ Ponto de entrada da aplicação. Responsável por:
   4. Deletar registros  
   5. Consultar tabela  
   6. Sair  
+  
+---
+
+### `DbManipulation.cs`
+Classe com as operações principais de banco de dados:
+
+- `CreateTable()` – Cria a tabela se ela não existir
+- `DeleteTable()` – Deleta a tabela se existir
+- `InsertEmployees()` – Insere funcionários com dados aleatórios
+- `DeleteAllEmployees()` – Apaga todos os registros da tabela
+- `GetAllEmployees()` – Lista todos os funcionários
+
+Todas as operações verificam se a tabela existe antes de executarem.
 
 ---
 
@@ -46,18 +59,13 @@ Utiliza o método `OnConfiguring` para configurar a string de conexão.
 
 ---
 
-### `ExampleAppSettings.json`
-Arquivo de exemplo com a configuração de conexão:
+### `ValuesGeneratorForTheDB.cs`
+Classe utilitária para gerar dados aleatórios:
 
-```json
-{
-  "ConnectionStrings": {
-    "ConnectionString": "Server=Change_Me;Database=Change_Me;User Id=Change_Me;Password=Change_Me;TrustServerCertificate=True;"
-  }
-}
-```
+- `GetRandomName()` – Gera um nome brasileiro aleatório
+- `GetRandomCity()` – Gera uma cidade brasileira aleatória
 
-> Substitua os valores `Change_Me` pelos dados reais do seu ambiente.
+Utilizado para alimentar os dados da tabela durante inserções.
 
 ---
 
@@ -80,26 +88,18 @@ Campos:
 
 ---
 
-### `DataManipulation.cs`
-Classe com as operações principais de banco de dados:
+### `ExampleAppSettings.json`
+Arquivo de exemplo com a configuração de conexão:
 
-- `CreateTable()` – Cria a tabela se ela não existir
-- `DeleteTable()` – Deleta a tabela se existir
-- `InsertEmployees(int count)` – Insere `count` funcionários com dados aleatórios
-- `DeleteAllEmployees()` – Apaga todos os registros da tabela
-- `GetAllEmployees()` – Lista todos os funcionários
+```json
+{
+  "ConnectionStrings": {
+    "ConnectionString": "Server=Change_Me;Database=Change_Me;User Id=Change_Me;Password=Change_Me;TrustServerCertificate=True;"
+  }
+}
+```
 
-Todas as operações verificam se a tabela existe antes de executarem.
-
----
-
-### `DataGenerator.cs`
-Classe utilitária para gerar dados aleatórios:
-
-- `GetRandomName()` – Gera um nome brasileiro aleatório
-- `GetRandomCity()` – Gera uma cidade brasileira aleatória
-
-Utilizado para alimentar os dados da tabela durante inserções.
+> Substitua os valores `Change_Me` pelos dados reais do seu ambiente.
 
 ---
 
@@ -116,6 +116,7 @@ Utilizado para alimentar os dados da tabela durante inserções.
 - SQL Server (local ou remoto)
 - Pacotes NuGet:
   - `Microsoft.EntityFrameworkCore`
+  - `Microsoft.Data.SqlClient`
   - `Microsoft.EntityFrameworkCore.SqlServer`
   - `Microsoft.Extensions.Configuration.Json`
 
