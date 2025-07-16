@@ -26,13 +26,20 @@ Ponto de entrada da aplicação. Responsável por:
 - Ler a `ConnectionString` do `appsettings.json`.
 - Instanciar `MyDbContext` e `DbManipulation`.
 - Exibir o menu interativo com as opções:
-  1. Criar tabela  
-  2. Deletar tabela  
-  3. Inserir registros  
-  4. Deletar registros  
-  5. Consultar tabela  
-  6. Sair  
-  
+
+```
+Menu de Opções:
+
+1. Criar tabela
+2. Deletar tabela
+3. Inserir registros
+4. Deletar registros
+5. Consultar tabela
+6. Sair
+
+Escolha uma opção: 
+```
+
 ---
 
 ### `DbManipulation.cs`
