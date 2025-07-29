@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Desafio_02
+namespace Banco_de_Dados
 {
     [Table("Funcionario")]
     public class Employee

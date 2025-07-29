@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
-namespace Desafio_02
+namespace Banco_de_Dados
 {
     public class DbManipulation
     {

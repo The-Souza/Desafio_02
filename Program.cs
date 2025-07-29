@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Desafio_02;
+namespace Banco_de_Dados;
 public class Program
 {
     public static void Main()

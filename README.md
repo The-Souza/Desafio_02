@@ -7,7 +7,7 @@ Aplicação console em C# utilizando **Entity Framework Core** para manipulaçã
 ## 📁 Estrutura do Projeto
 
 ```
-Desafio_02/
+Banco_de_Dados/
 ├── Program.cs
 ├── DbManipulation.cs
 ├── MyDbContext.cs

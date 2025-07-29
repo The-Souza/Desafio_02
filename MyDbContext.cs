@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Desafio_02
+namespace Banco_de_Dados
 {
     public class MyDbContext : DbContext
     {

@@ -1,4 +1,4 @@
-﻿namespace Desafio_02
+﻿namespace Banco_de_Dados
 {
     public class ValuesGeneratorForTheDB
     {
